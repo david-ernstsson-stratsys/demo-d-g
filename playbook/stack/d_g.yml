@@ -1,0 +1,21 @@
+version: '3.5'
+
+services:
+  demo-d-g:
+    image: "${DEMO_D_G_SERVICE_IMAGE}"
+    environment:
+      FOO: "BAR"
+    networks:
+      - proxy
+    deploy:
+      update_config:
+        order: start-first
+      labels:
+        - "traefik.port=8080"
+        - "traefik.frontend.rule=HostRegexp:demo-d-g.{domain:.*}"
+        - "traefik.backend.loadbalancer.swarm=true"
+
+networks:
+  proxy:
+    external: true
+    name: stratsys_swarm_proxy
